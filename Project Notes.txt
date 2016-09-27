@@ -1,0 +1,16 @@
+How to use Google Maps API with Ionic (Also shows how to get current location using Cordova):
+[Important note: This link also contains an excellent procedure on how to correctly setup an ionic app.
+These instructions should be followed every time.]
+
+http://www.joshmorony.com/integrating-google-maps-with-an-ionic-application/
+
+Note: running the command "ionic setup sass" is what fixed the blank screen problem. (i.e. instead of loading the map,
+the screen was just blank. Running "npm install -g gulp" and then the "ionic setup sass" commands on the project made
+the map visible.
+
+FOR EVERY IONIC PROJECT, it’s a good idea to set up SASS right away:
+Run the following command inside of your new project to set up SASS:
+
+ionic setup sass
+
+Current Problem: injecting "ngCordova" into angular.module() in app.js wrecks the entire application, need to find out why
