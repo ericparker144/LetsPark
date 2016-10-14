@@ -84,4 +84,102 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/tab/map');
 
-});
+})
+
+
+.factory('GEO', function ($cordovaGeolocation) {
+
+    return {
+
+        getMap: function () {
+            
+            var posOptions = { timeout: 10000, enableHighAccuracy: false };
+            $cordovaGeolocation
+              .getCurrentPosition(posOptions)
+              .then(function (position) {
+                  var lat = position.coords.latitude;
+                  var long = position.coords.longitude;
+
+                  var initialLatLng = new google.maps.LatLng(lat, long);
+
+                  var mapOptions = {
+                      center: initialLatLng,
+                      zoom: 15,
+                      mapTypeId: google.maps.MapTypeId.ROADMAP
+                  };
+
+                  var map = new google.maps.Map(document.getElementById("map"), mapOptions);
+
+                  var contentString = '<div id="content">' +
+             '<h6 id="firstHeading" class="firstHeading">Initial Location</h6>' + '<div id="bodyContent">' + '<p>This is the initial location found using your phone\'s GPS.</p>'
+           + '</div>' + '</div>';
+
+                  var infowindow = new google.maps.InfoWindow({
+                      content: contentString
+                  });
+
+                  var marker = new google.maps.Marker({
+                      map: map,
+                      position: initialLatLng,
+                      title: 'Initial Location'
+                  });
+
+                  marker.addListener('click', function () {
+                      infowindow.open(map, marker);
+                  });
+
+
+              }, function (err) {
+                  
+                  var lat = 42.304523;
+                  var long = -83.062027;
+
+                  var defaultLatLng = new google.maps.LatLng(lat, long);
+
+                  var mapOptions = {
+                      center: defaultLatLng,
+                      zoom: 15,
+                      mapTypeId: google.maps.MapTypeId.ROADMAP
+                  };
+
+                  var map = new google.maps.Map(document.getElementById("map"), mapOptions);
+                  
+                  var contentString = '<div id="content">' +
+             '<h6 id="firstHeading" class="firstHeading">Default Location</h6>' + '<div id="bodyContent">' + '<p>Your phone\'s GPS has failed you. This is the default location.</p>'
+           + '</div>' + '</div>';
+
+                  var infowindow = new google.maps.InfoWindow({
+                      content: contentString
+                  });
+
+                  var marker = new google.maps.Marker({
+                      map: map,
+                      position: initialLatLng,
+                      title: 'Initial Location'
+                  });
+
+                  marker.addListener('click', function () {
+                      infowindow.open(map, marker);
+                  });
+
+              });
+        }
+    }
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+;
