@@ -25,8 +25,19 @@ angular.module('starter.controllers', [])
   $scope.chat = Chats.get($stateParams.chatId);
 })
 
-.controller('AccountCtrl', function($scope) {
+.controller('AccountCtrl', function($scope, $http) {
   $scope.settings = {
     enableFriends: true
   };
+
+  $scope.users = [];
+
+  $http.get('http://localhost:8080/api/GetLetsParkUsers')
+    .then(function (response) {
+        $scope.users = response.data;
+    }, function (response) {
+        $scope.settings.enableFriends = false;
+    });
+
+
 });
