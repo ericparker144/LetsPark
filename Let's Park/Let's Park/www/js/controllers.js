@@ -25,19 +25,46 @@ angular.module('starter.controllers', [])
   $scope.chat = Chats.get($stateParams.chatId);
 })
 
-.controller('AccountCtrl', function($scope, $http) {
+.controller('AccountCtrl', function($scope, $http, API) {
   $scope.settings = {
     enableFriends: true
   };
 
   $scope.users = [];
 
-  $http.get('http://localhost:8080/api/GetLetsParkUsers')
+  $http.get(API + '/GetLetsParkUsers')
     .then(function (response) {
         $scope.users = response.data;
     }, function (response) {
         $scope.settings.enableFriends = false;
     });
 
+
+})
+
+.controller('loginController', function ($scope, $http, API, $window) {
+
+    $scope.userInfo = {
+        email_address: '',
+        password: ''
+    };
+
+    $scope.loginUser = function () {
+
+        console.log($scope.userInfo);
+
+        $http.post(API + '/Login', $scope.userInfo).then(
+            function (response) {
+                if (response.data == 'Success')
+                    $window.location.href = "#/tab/map";
+                else
+                    alert("nope");
+            },
+            function (response) {
+                alert('Failure')
+            }
+            )
+
+    }
 
 });

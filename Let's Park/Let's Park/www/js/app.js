@@ -7,82 +7,90 @@
 // 'starter.controllers' is found in controllers.js
 angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'ngCordova'])
 
-.run(function($ionicPlatform) {
-  $ionicPlatform.ready(function() {
-    // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
-    // for form inputs)
-      if (cordova.platformId === 'ios' && window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
-        cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
-        cordova.plugins.Keyboard.disableScroll(true);
-    }
-    if (window.StatusBar) {
-      // org.apache.cordova.statusbar required
-      StatusBar.styleDefault();
-    }
-  });
+.run(function ($ionicPlatform) {
+    $ionicPlatform.ready(function () {
+        // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
+        // for form inputs)
+        if (cordova.platformId === 'ios' && window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
+            cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
+            cordova.plugins.Keyboard.disableScroll(true);
+        }
+        if (window.StatusBar) {
+            // org.apache.cordova.statusbar required
+            StatusBar.styleDefault();
+        }
+    });
 })
+
+.constant('API', 'http://localhost:8080/api')
 
 .config(function ($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
 
 
     $ionicConfigProvider.tabs.position('bottom');
 
-  // Ionic uses AngularUI Router which uses the concept of states
-  // Learn more here: https://github.com/angular-ui/ui-router
-  // Set up the various states which the app can be in.
-  // Each state's controller can be found in controllers.js
-  $stateProvider
+    // Ionic uses AngularUI Router which uses the concept of states
+    // Learn more here: https://github.com/angular-ui/ui-router
+    // Set up the various states which the app can be in.
+    // Each state's controller can be found in controllers.js
+    $stateProvider
 
-  // setup an abstract state for the tabs directive
-    .state('tab', {
-    url: '/tab',
-    abstract: true,
-    templateUrl: 'templates/tabs.html'
-  })
+      .state('login', {
+          url: '/login',
+          templateUrl: 'templates/login.html',
+          controller: 'loginController'
+      })
 
-  // Each tab has its own nav history stack:
+    // setup an abstract state for the tabs directive
+      .state('tab', {
+          url: '/tab',
+          abstract: true,
+          templateUrl: 'templates/tabs.html'
+      })
 
-  .state('tab.map', {
-    url: '/map',
-    views: {
-      'tab-map': {
-        templateUrl: 'templates/tab-map.html',
-        controller: 'MapCtrl'
-      }
-    }
-  })
+    // Each tab has its own nav history stack:
 
-  .state('tab.chats', {
-      url: '/chats',
-      views: {
-        'tab-chats': {
-          templateUrl: 'templates/tab-chats.html',
-          controller: 'ChatsCtrl'
+    .state('tab.map', {
+        url: '/map',
+        views: {
+            'tab-map': {
+                templateUrl: 'templates/tab-map.html',
+                controller: 'MapCtrl'
+            }
         }
-      }
-    })
-    .state('tab.chat-detail', {
-      url: '/chats/:chatId',
-      views: {
-        'tab-chats': {
-          templateUrl: 'templates/chat-detail.html',
-          controller: 'ChatDetailCtrl'
-        }
-      }
     })
 
-  .state('tab.account', {
-    url: '/account',
-    views: {
-      'tab-account': {
-        templateUrl: 'templates/tab-account.html',
-        controller: 'AccountCtrl'
-      }
-    }
-  });
+    .state('tab.chats', {
+        url: '/chats',
+        views: {
+            'tab-chats': {
+                templateUrl: 'templates/tab-chats.html',
+                controller: 'ChatsCtrl'
+            }
+        }
+    })
+      .state('tab.chat-detail', {
+          url: '/chats/:chatId',
+          views: {
+              'tab-chats': {
+                  templateUrl: 'templates/chat-detail.html',
+                  controller: 'ChatDetailCtrl'
+              }
+          }
+      })
 
-  // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/tab/map');
+    .state('tab.account', {
+        url: '/account',
+        views: {
+            'tab-account': {
+                templateUrl: 'templates/tab-account.html',
+                controller: 'AccountCtrl'
+            }
+        }
+    });
+
+    // if none of the above states are matched, use this as the fallback
+    $urlRouterProvider.otherwise('/login');
 
 })
 
@@ -92,7 +100,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     return {
 
         getMap: function () {
-            
+
             var posOptions = { timeout: 10000, enableHighAccuracy: false };
             $cordovaGeolocation
               .getCurrentPosition(posOptions)
@@ -130,7 +138,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
 
 
               }, function (err) {
-                  
+
                   var lat = 42.304523;
                   var long = -83.062027;
 
@@ -143,7 +151,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
                   };
 
                   var map = new google.maps.Map(document.getElementById("map"), mapOptions);
-                  
+
                   var contentString = '<div id="content">' +
              '<h6 id="firstHeading" class="firstHeading">Default Location</h6>' + '<div id="bodyContent">' + '<p>Your phone\'s GPS has failed you. This is the default location.</p>'
            + '</div>' + '</div>';
