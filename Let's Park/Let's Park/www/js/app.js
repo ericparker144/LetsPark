@@ -22,7 +22,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     });
 })
 
-.constant('API', 'http://localhost:8080/api')
+.constant('API', 'http://lpserver-letsparkserver.44fs.preview.openshiftapps.com/api')
 
 .config(function ($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
 
@@ -144,6 +144,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
 
                   var defaultLatLng = new google.maps.LatLng(lat, long);
 
+
                   var mapOptions = {
                       center: defaultLatLng,
                       zoom: 15,
@@ -177,12 +178,40 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
 
 
 
+.factory("Utility", function ($ionicPopup) {
+    return {
+        showAlert: function (title, content) {
+            var alertPopup = $ionicPopup.alert({
+                title: title,
+                template: content
+            });
+
+            //alertPopup.then(function (res) {
+            //    console.log('Pop up closed.');
+            //});
+        }
+    }
+})
 
 
 
 
+.factory('UserInfo', function () {
 
+    var userInfo = {};
+    var email_address = '';
 
+    userInfo.updateUserInfo = function (emailAddress) {
+        email_address = emailAddress;
+    }
+
+    userInfo.getUserInfo = function () {
+        return email_address;
+    }
+
+    return userInfo;
+
+})
 
 
 
