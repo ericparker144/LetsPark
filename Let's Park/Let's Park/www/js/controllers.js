@@ -1,9 +1,13 @@
 angular.module('starter.controllers', [])
 
 .controller('MapCtrl', function ($scope, GEO) {
-        
-    GEO.getMap();
-    
+
+    angular.element(document).ready(function () {
+
+        GEO.getMap(GEO.addSpotsToMap);
+
+    });
+
 })
 
 .controller('ChatsCtrl', function($scope, Chats) {
