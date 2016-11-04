@@ -185,16 +185,11 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
                   infowindow.open(obj.map, marker);
               });
 
-              oogle.maps.event.addListenerOnce(obj.map, 'idle', function () {
+              google.maps.event.addListenerOnce(obj.map, 'idle', function () {
                   callback();
               });
 
           });
-
-
-        
-        // Call a function at the end of this function call [pass the function you wish to callback as a parameter to this function]
-        // callback();
     };
 
     obj.addSpotsToMap = function () {
