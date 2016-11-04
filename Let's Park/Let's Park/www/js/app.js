@@ -97,131 +97,145 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
 
 .factory('GEO', function ($cordovaGeolocation, API, $http) {
 
-    return {
 
-        map: {},
+    var obj = {};
 
-        getMap: function (callback) {
+    obj.map = {};    
 
-            var posOptions = { timeout: 10000, enableHighAccuracy: false };
-            $cordovaGeolocation
-              .getCurrentPosition(posOptions)
-              .then(function (position) {
-                  var lat = position.coords.latitude;
-                  var long = position.coords.longitude;
+    obj.getMap = function (callback) {
 
-                  var initialLatLng = new google.maps.LatLng(lat, long);
+        var posOptions = { timeout: 10000, enableHighAccuracy: false };
+        $cordovaGeolocation
+          .getCurrentPosition(posOptions)
+          .then(function (position) {
+              var lat = position.coords.latitude;
+              var long = position.coords.longitude;
 
-                  var mapOptions = {
-                      center: initialLatLng,
-                      zoom: 15,
-                      mapTypeId: google.maps.MapTypeId.ROADMAP
-                  };
+              var initialLatLng = new google.maps.LatLng(lat, long);
 
-                  map = new google.maps.Map(document.getElementById("map"), mapOptions);
+              var mapOptions = {
+                  center: initialLatLng,
+                  zoom: 15,
+                  mapTypeId: google.maps.MapTypeId.ROADMAP
+              };
 
-                  var contentString = '<div id="content">' +
-             '<b><h5 id="firstHeading" class="firstHeading">Initial Location</h5></b>' + '<div id="bodyContent">' + '<p>This is the initial location found using your phone\'s GPS.</p>'
-           + '</div>' + '</div>';
+              obj.map = new google.maps.Map(document.getElementById("map"), mapOptions);
 
-                  var infowindow = new google.maps.InfoWindow({
-                      content: contentString
-                  });
+              var contentString = '<div id="content">' +
+         '<b><h5 id="firstHeading" class="firstHeading">Initial Location</h5></b>' + '<div id="bodyContent">' + '<p>This is the initial location found using your phone\'s GPS.</p>'
+       + '</div>' + '</div>';
 
-                  var pinColor = "387EF5";
-                  var pinImage = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + pinColor,
-                    new google.maps.Size(21, 34),
-                    new google.maps.Point(0, 0),
-                    new google.maps.Point(10, 34));
-
-                  var marker = new google.maps.Marker({
-                      map: map,
-                      position: initialLatLng,
-                      title: 'Initial Location',
-                      icon: pinImage
-                  });
-
-                  marker.addListener('click', function () {
-                      infowindow.open(map, marker);
-                  });
-
-
-              }, function (err) {
-
-                  var lat = 42.304523;
-                  var long = -83.062027;
-
-                  var defaultLatLng = new google.maps.LatLng(lat, long);
-
-
-                  var mapOptions = {
-                      center: defaultLatLng,
-                      zoom: 15,
-                      mapTypeId: google.maps.MapTypeId.ROADMAP
-                  };
-
-                  var map = new google.maps.Map(document.getElementById("map"), mapOptions);
-
-                  var contentString = '<div id="content">' +
-             '<h6 id="firstHeading" class="firstHeading">Default Location</h6>' + '<div id="bodyContent">' + '<p>Your phone\'s GPS has failed you. This is the default location.</p>'
-           + '</div>' + '</div>';
-
-                  var infowindow = new google.maps.InfoWindow({
-                      content: contentString
-                  });
-
-                  var marker = new google.maps.Marker({
-                      map: map,
-                      position: initialLatLng,
-                      title: 'Initial Location'
-                  });
-
-                  marker.addListener('click', function () {
-                      infowindow.open(map, marker);
-                  });
+              var infowindow = new google.maps.InfoWindow({
+                  content: contentString
               });
 
-            // Call a function at the end of this function call [pass the function you wish to callback as a parameter to this function]
-            callback();
-        },
+              var pinColor = "387EF5";
+              var pinImage = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + pinColor,
+                new google.maps.Size(21, 34),
+                new google.maps.Point(0, 0),
+                new google.maps.Point(10, 34));
 
-        addSpotsToMap: function () {
+              var marker = new google.maps.Marker({
+                  map: obj.map,
+                  position: initialLatLng,
+                  title: 'Initial Location',
+                  icon: pinImage
+              });
 
-            var results = [];
-            var infowindow = new google.maps.InfoWindow(), marker;
+              marker.addListener('click', function () {
+                  infowindow.open(obj.map, marker);
+              });
 
-            // Set the beginning for the contentString . Later, .concat() method is used to join two or more strings.
-            // Concat method does not change the existing strings, but returns a new string containing the text of the joined strings.
-            var contentString = '<div id="content">' +
-                                '<b><h5 id="firstHeading" class="firstHeading">Available Spot</h5></b>' + '<div id="bodyContent">' + '<p>';
+              google.maps.event.addListenerOnce(obj.map, 'idle', function () {
+                  callback();
+              });
 
-            $http.get(API + '/GetAllSpots').then(
-                function (response) {
-                    results = response.data;
 
-                    for (var i = 0; i < results.length; i++) {
+          }, function (err) {
 
-                        var spotLatLng = new google.maps.LatLng(results[i].latitude, results[i].longitude);
+              var lat = 42.304523;
+              var long = -83.062027;
 
-                        marker = new google.maps.Marker({
-                            map: map,
-                            position: spotLatLng,
-                            title: 'Available Spot'
-                        });
+              var defaultLatLng = new google.maps.LatLng(lat, long);
 
-                        google.maps.event.addListener(marker, 'click', (function (marker, i) {
-                            return function (evt) {
-                                infowindow.setContent(contentString.concat('<b>Price: </b>$', results[i].price, '<br><b>Spotter: </b>', results[i].email_address, '<br><b>Description: </b>', results[i].description, '</p>' + '</div>' + '</div>'));
-                                infowindow.open(map, marker);
-                            }
-                        })(marker, i));
-                    }
-                },
-                function (response) {
-                    console.log("Server Error")
-                });
-        }
-    }
+
+              var mapOptions = {
+                  center: defaultLatLng,
+                  zoom: 15,
+                  mapTypeId: google.maps.MapTypeId.ROADMAP
+              };
+
+              obj.map = new google.maps.Map(document.getElementById("map"), mapOptions);
+
+              var contentString = '<div id="content">' +
+         '<h6 id="firstHeading" class="firstHeading">Default Location</h6>' + '<div id="bodyContent">' + '<p>Your phone\'s GPS has failed you. This is the default location.</p>'
+       + '</div>' + '</div>';
+
+              var infowindow = new google.maps.InfoWindow({
+                  content: contentString
+              });
+
+              var marker = new google.maps.Marker({
+                  map: obj.map,
+                  position: initialLatLng,
+                  title: 'Initial Location'
+              });
+
+              marker.addListener('click', function () {
+                  infowindow.open(obj.map, marker);
+              });
+
+              oogle.maps.event.addListenerOnce(obj.map, 'idle', function () {
+                  callback();
+              });
+
+          });
+
+
+        
+        // Call a function at the end of this function call [pass the function you wish to callback as a parameter to this function]
+        // callback();
+    };
+
+    obj.addSpotsToMap = function () {
+
+        console.log("test");
+        var results = [];
+        var infowindow = new google.maps.InfoWindow(), marker;
+
+        // Set the beginning for the contentString . Later, .concat() method is used to join two or more strings.
+        // Concat method does not change the existing strings, but returns a new string containing the text of the joined strings.
+        var contentString = '<div id="content">' +
+                            '<b><h5 id="firstHeading" class="firstHeading">Available Spot</h5></b>' + '<div id="bodyContent">' + '<p>';
+
+        $http.get(API + '/GetAllSpots').then(
+            function (response) {
+                results = response.data;
+
+                for (var i = 0; i < results.length; i++) {
+
+                    var spotLatLng = new google.maps.LatLng(results[i].latitude, results[i].longitude);
+
+                    marker = new google.maps.Marker({
+                        map: obj.map,
+                        position: spotLatLng,
+                        title: 'Available Spot'
+                    });
+
+                    google.maps.event.addListener(marker, 'click', (function (marker, i) {
+                        return function (evt) {
+                            infowindow.setContent(contentString.concat('<b>Price: </b>$', results[i].price, '<br><b>Spotter: </b>', results[i].email_address, '<br><b>Description: </b>', results[i].description, '</p>' + '</div>' + '</div>'));
+                            infowindow.open(obj.map, marker);
+                        }
+                    })(marker, i));
+                }
+            },
+            function (response) {
+                console.log("Server Error")
+            });
+    };
+
+    return obj;
 })
 
 
