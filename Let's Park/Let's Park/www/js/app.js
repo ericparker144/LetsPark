@@ -12,7 +12,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
         // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
         // for form inputs)
         if (cordova.platformId === 'ios' && window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
-            cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
+            // By changing .hideKeyboardAccessoryBar() method to false, it adds the 'done' button to the keyboard for iOS
+            cordova.plugins.Keyboard.hideKeyboardAccessoryBar(false);
             cordova.plugins.Keyboard.disableScroll(true);
         }
         if (window.StatusBar) {
@@ -144,8 +145,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
                       marker.setMap(null);
                   });
                   markers = [];
-
-
+                  
                   // For each place, get the icon, name and location.
                   var bounds = new google.maps.LatLngBounds();
                   places.forEach(function (place) {
