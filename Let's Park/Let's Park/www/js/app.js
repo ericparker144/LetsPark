@@ -95,12 +95,11 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
 })
 
 
-.factory('GEO', function ($cordovaGeolocation, API, $http) {
-
+.factory('GEO', function ($cordovaGeolocation, API, $http, Utility) {
 
     var obj = {};
 
-    obj.map = {};    
+    obj.map = {};
 
     obj.getMap = function (callback) {
 
@@ -120,6 +119,65 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
               };
 
               obj.map = new google.maps.Map(document.getElementById("map"), mapOptions);
+
+              var input = document.getElementById('pac-input');
+              var searchBox = new google.maps.places.SearchBox(input);
+              obj.map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+              // Bias the SearchBox results towards current map's viewport.
+              obj.map.addListener('bounds_changed', function () {
+                  searchBox.setBounds(obj.map.getBounds());
+              });
+
+              var markers = [];
+              // Listen for the event fired when the user selects a prediction and retrieve
+              // more details for that place.
+              searchBox.addListener('places_changed', function () {
+                  var places = searchBox.getPlaces();
+
+                  if (places.length == 0) {
+                      return;
+                  }
+
+                  // Clear out the old markers.
+                  markers.forEach(function (marker) {
+                      marker.setMap(null);
+                  });
+                  markers = [];
+
+
+                  // For each place, get the icon, name and location.
+                  var bounds = new google.maps.LatLngBounds();
+                  places.forEach(function (place) {
+                      if (!place.geometry) {
+                          console.log("Returned place contains no geometry");
+                          return;
+                      }
+                      var icon = {
+                          url: place.icon,
+                          size: new google.maps.Size(71, 71),
+                          origin: new google.maps.Point(0, 0),
+                          anchor: new google.maps.Point(17, 34),
+                          scaledSize: new google.maps.Size(25, 25)
+                      };
+
+                      // Create a marker for each place.
+                      markers.push(new google.maps.Marker({
+                          map: obj.map,
+                          icon: icon,
+                          title: place.name,
+                          position: place.geometry.location
+                      }));
+
+                      if (place.geometry.viewport) {
+                          // Only geocodes have viewport.
+                          bounds.union(place.geometry.viewport);
+                      } else {
+                          bounds.extend(place.geometry.location);
+                      }
+                  });
+                  obj.map.fitBounds(bounds);
+              });
 
               var contentString = '<div id="content">' +
          '<b><h5 id="firstHeading" class="firstHeading">Initial Location</h5></b>' + '<div id="bodyContent">' + '<p>This is the initial location found using your phone\'s GPS.</p>'
@@ -194,7 +252,6 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
 
     obj.addSpotsToMap = function () {
 
-        console.log("test");
         var results = [];
         var infowindow = new google.maps.InfoWindow(), marker;
 
@@ -219,8 +276,12 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
 
                     google.maps.event.addListener(marker, 'click', (function (marker, i) {
                         return function (evt) {
-                            infowindow.setContent(contentString.concat('<b>Price: </b>$', results[i].price, '<br><b>Spotter: </b>', results[i].email_address, '<br><b>Description: </b>', results[i].description, '</p>' + '</div>' + '</div>'));
+                            infowindow.setContent(contentString.concat('<b>Price: </b>$', results[i].price, '<br><b>Spotter: </b>', results[i].email_address,
+                                '<br><b>Availability: </b>', Utility.convertDBTimeTo12HourTime(results[i].start_time), ', ', results[i].start_time.substring(0, 10),
+                                ' to ', Utility.convertDBTimeTo12HourTime(results[i].end_time), ', ', results[i].end_time.substring(0, 10), '<br><b>Description: </b>', results[i].description, '</p>' + '</div>' + '</div>'));
+
                             infowindow.open(obj.map, marker);
+
                         }
                     })(marker, i));
                 }
@@ -246,6 +307,26 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
             //alertPopup.then(function (res) {
             //    console.log('Pop up closed.');
             //});
+        },
+        convertDBTimeTo12HourTime: function (str) {
+            var tod = '';
+            var hours = '';
+
+            if (str.substring(11, 13) < 12) {
+                tod = ' AM';
+                hours = str.substring(11, 13);
+            }
+            else {
+                tod = ' PM';
+                hours = str.substring(11, 13) - 12;
+            }
+
+            if (hours.toString() === '00' || hours == 0)
+                return '12'.concat(str.substring(13, 16), tod);
+            if (str.substring(11, 12) === '0')
+                return hours.substring(1).concat(str.substring(13, 16), tod);
+
+            return hours.toString().concat(str.substring(13, 16), tod);
         }
     }
 })
