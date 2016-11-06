@@ -101,6 +101,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     var obj = {};
 
     obj.map = {};
+    obj.spots = [];
 
     obj.getMap = function (callback) {
 
@@ -145,7 +146,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
                       marker.setMap(null);
                   });
                   markers = [];
-                  
+
                   // For each place, get the icon, name and location.
                   var bounds = new google.maps.LatLngBounds();
                   places.forEach(function (place) {
@@ -209,6 +210,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
               });
 
 
+
           }, function (err) {
 
               var lat = 42.304523;
@@ -252,8 +254,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
 
     obj.addSpotsToMap = function () {
 
-        var results = [];
-        var infowindow = new google.maps.InfoWindow(), marker;
+        // Create just one info window which will display information for the marker that is clicked
+        var infowindow = new google.maps.InfoWindow({ disableAutoPan: true }), marker;
 
         // Set the beginning for the contentString . Later, .concat() method is used to join two or more strings.
         // Concat method does not change the existing strings, but returns a new string containing the text of the joined strings.
@@ -262,11 +264,11 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
 
         $http.get(API + '/GetAllSpots').then(
             function (response) {
-                results = response.data;
+                obj.spots = response.data;
 
-                for (var i = 0; i < results.length; i++) {
+                for (var i = 0; i < obj.spots.length; i++) {
 
-                    var spotLatLng = new google.maps.LatLng(results[i].latitude, results[i].longitude);
+                    var spotLatLng = new google.maps.LatLng(obj.spots[i].latitude, obj.spots[i].longitude);
 
                     marker = new google.maps.Marker({
                         map: obj.map,
@@ -274,21 +276,40 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
                         title: 'Available Spot'
                     });
 
+                    // Create a new infoWindow for each marker to display its price
+                    var priceInfo = new google.maps.InfoWindow({ disableAutoPan: true });
+
+                    // Add a property to the obj.spots object that holds this new infoWindow
+                    obj.spots[i].priceInfoWindow = priceInfo;
+
+                    priceInfo.setContent('$'.concat(obj.spots[i].price));
+                    priceInfo.open(obj.map, marker);
+
                     google.maps.event.addListener(marker, 'click', (function (marker, i) {
                         return function (evt) {
-                            infowindow.setContent(contentString.concat('<b>Price: </b>$', results[i].price, '<br><b>Spotter: </b>', results[i].email_address,
-                                '<br><b>Availability: </b>', Utility.convertDBTimeTo12HourTime(results[i].start_time), ', ', results[i].start_time.substring(0, 10),
-                                ' to ', Utility.convertDBTimeTo12HourTime(results[i].end_time), ', ', results[i].end_time.substring(0, 10), '<br><b>Description: </b>', results[i].description, '</p>' + '</div>' + '</div>'));
+                            infowindow.setContent(contentString.concat('<b>Price: </b>$', obj.spots[i].price, '<br><b>Spotter: </b>', obj.spots[i].email_address,
+                                '<br><b>Availability: </b>', Utility.convertDBTimeTo12HourTime(obj.spots[i].start_time), ', ', obj.spots[i].start_time.substring(0, 10),
+                                ' to ', Utility.convertDBTimeTo12HourTime(obj.spots[i].end_time), ', ', obj.spots[i].end_time.substring(0, 10), '<br><b>Description: </b>', obj.spots[i].description, '</p>' + '</div>' + '</div>'));
 
+                            obj.spots[i].priceInfoWindow.close();
                             infowindow.open(obj.map, marker);
 
                         }
                     })(marker, i));
+
+                    // Re-display the price info window when 'infoWindow' is closed
+                    google.maps.event.addListener(infowindow, 'closeclick', (function (marker, i) {
+                        return function (evt) {
+                            obj.spots[i].priceInfoWindow.open(obj.map, marker);
+                        }
+                    })(marker, i));
+
                 }
             },
             function (response) {
                 console.log("Server Error")
             });
+
     };
 
     return obj;
@@ -350,7 +371,6 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     return userInfo;
 
 })
-
 
 
 

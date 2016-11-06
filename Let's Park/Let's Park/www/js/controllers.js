@@ -7,8 +7,6 @@ angular.module('starter.controllers', [])
         GEO.getMap(GEO.addSpotsToMap);
 
     });
-
-
     
 })
 
