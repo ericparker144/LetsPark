@@ -48,9 +48,14 @@ angular.module('starter.controllers', [])
 
 .controller('loginController', function ($scope, $http, API, $window, Utility, UserInfo) {
 
+    $scope.remember = {};
+
+    $scope.remember.me = (window.localStorage.getItem("user_name") == null ? false : true);
+
+
     $scope.userInfo = {
-        email_address: '',
-        password: ''
+        email_address: (window.localStorage.getItem("user_name") == null ? '' : window.localStorage.getItem("user_name")),
+        password: (window.localStorage.getItem("password") == null ? '' : window.localStorage.getItem("password"))
     };
 
     $scope.loginUser = function () {
@@ -60,6 +65,14 @@ angular.module('starter.controllers', [])
         $http.post(API + '/Login', info).then(
             function (response) {
                 if (response.data == 'Success') {
+                    if ($scope.remember.me) {
+                        window.localStorage.setItem("user_name", $scope.userInfo.email_address);
+                        window.localStorage.setItem("password", $scope.userInfo.password);
+                    }
+                    else {
+                        window.localStorage.removeItem("user_name");
+                        window.localStorage.removeItem("user_name");
+                    }
                     UserInfo.updateUserInfo(info.email_address);
                     $window.location.href = "#/tab/map";
                 }
@@ -85,4 +98,63 @@ angular.module('starter.controllers', [])
 
     }
 
-});
+
+
+})
+
+
+
+    .controller('profileController', function ($scope, $http, API, UserInfo) {
+
+        angular.element(document).ready(function () {
+
+            $scope.mySpots = [];
+            $scope.user = {
+                noSpots: true,
+                caption: ''
+            };
+
+
+            $http.get(API + '/GetMySpots?email_address=' + UserInfo.getUserInfo()).then(
+                function (response) {
+                    $scope.mySpots = response.data;
+                    if (response.data.length < 1) {
+                        $scope.user.caption = 'You are not currently selling any parking spots.';
+                        $scope.user.noSpots = false;
+                    }
+                },
+                function (response) {
+                    return;
+                });
+        });
+
+    })
+
+
+
+    .controller('spotsController', function ($scope, $http, API, UserInfo, GEO) {
+
+        angular.element(document).ready(function () {
+
+            $scope.allSpots = [];
+            $scope.spotsInfo = {
+                noSpots: true,
+                caption: ''
+            };
+
+            $scope.allSpots = GEO.spots;
+
+            if ($scope.allSpots < 1) {
+                $scope.spotsInfo.caption = 'There are no spots available in your area.';
+                $scope.spotsInfo.noSpots = false;
+            }
+            
+        });
+
+    })
+
+
+
+
+
+;

@@ -51,6 +51,26 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
 
     // Each tab has its own nav history stack:
 
+    .state('tab.profile', {
+        url: '/profile',
+        views: {
+            'tab-profile': {
+                templateUrl: 'templates/tab-profile.html',
+                controller: 'profileController'
+            }
+        }
+    })
+
+    .state('tab.spots', {
+        url: '/spots',
+        views: {
+            'tab-spots': {
+                templateUrl: 'templates/tab-spots.html',
+                controller: 'spotsController'
+            }
+        }
+    })
+
     .state('tab.map', {
         url: '/map',
         views: {
@@ -255,7 +275,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     obj.addSpotsToMap = function () {
 
         // Create just one info window which will display information for the marker that is clicked
-        var infowindow = new google.maps.InfoWindow({ disableAutoPan: true }), marker;
+        var infowindow = new google.maps.InfoWindow(), marker;
 
         // Set the beginning for the contentString . Later, .concat() method is used to join two or more strings.
         // Concat method does not change the existing strings, but returns a new string containing the text of the joined strings.
@@ -294,6 +314,10 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
                             obj.spots[i].priceInfoWindow.close();
                             infowindow.open(obj.map, marker);
 
+                            // Close all priceInfoWindows to ensure none of them overlap current window
+                            //for (var j = 0; i < obj.spots.length; j++) {
+                            //    obj.spots[j].priceInfoWindow.close();
+                            //}
                         }
                     })(marker, i));
 
