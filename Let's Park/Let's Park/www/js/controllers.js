@@ -43,7 +43,6 @@ angular.module('starter.controllers', [])
           $scope.settings.enableFriends = false;
       });
 
-
 })
 
 .controller('loginController', function ($scope, $http, API, $window, Utility, UserInfo) {
@@ -103,7 +102,7 @@ angular.module('starter.controllers', [])
 })
 
 
-    .controller('profileController', function ($scope, $http, API, UserInfo) {
+    .controller('profileController', function ($scope, $http, API, UserInfo, GEO, $window) {
 
         angular.element(document).ready(function () {
 
@@ -112,24 +111,45 @@ angular.module('starter.controllers', [])
                 noSpots: true,
                 caption: ''
             };
+
+            for (var i = 0; i < GEO.spots.length; i++) {
+                if (UserInfo.getUserInfo().user_ID == GEO.spots[i].user_ID)
+                    $scope.mySpots.push(GEO.spots[i]);
+            }
+
+            if ($scope.mySpots.length < 1) {
+                            $scope.user.caption = 'You are not currently selling any parking spots.';
+                            $scope.user.noSpots = false;
+                        }
             
-            $http.get(API + '/GetMySpots/' + UserInfo.getUserInfo().user_ID).then(
-                function (response) {
-                    $scope.mySpots = response.data;
-                    if (response.data.length < 1) {
-                        $scope.user.caption = 'You are not currently selling any parking spots.';
-                        $scope.user.noSpots = false;
-                    }
-                },
-                function (response) {
-                    return;
-                });
+            // No need for HTTP request
+            //$http.get(API + '/GetMySpots/' + UserInfo.getUserInfo().user_ID).then(
+            //    function (response) {
+            //        $scope.mySpots = response.data;
+            //        if (response.data.length < 1) {
+            //            $scope.user.caption = 'You are not currently selling any parking spots.';
+            //            $scope.user.noSpots = false;
+            //        }
+            //    },
+            //    function (response) {
+            //        return;
+            //    });
+
         });
+
+        $scope.viewMySpotOnMap = function (index) {
+
+            GEO.map.panTo($scope.mySpots[index].marker.getPosition());
+            GEO.map.setZoom(18);
+            $window.location.href = "#/tab/map";
+
+        };
 
     })
 
 
-    .controller('spotsController', function ($scope, $http, API, UserInfo, GEO) {
+
+    .controller('spotsController', function ($scope, $http, API, UserInfo, GEO, $window) {
 
         angular.element(document).ready(function () {
 
@@ -147,6 +167,15 @@ angular.module('starter.controllers', [])
             }
             
         });
+
+
+        $scope.viewSpotOnMap = function (index) {
+            console.log($scope.allSpots);
+            GEO.map.panTo($scope.allSpots[index].marker.getPosition());
+            GEO.map.setZoom(18);
+            $window.location.href = "#/tab/map";
+
+        };
 
     })
 

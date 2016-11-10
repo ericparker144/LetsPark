@@ -28,7 +28,6 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
 
 .config(function ($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
 
-
     $ionicConfigProvider.tabs.position('bottom');
 
     // Ionic uses AngularUI Router which uses the concept of states
@@ -299,6 +298,9 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
 
                     // Create a new infoWindow for each marker to display its price
                     var priceInfo = new google.maps.InfoWindow({ disableAutoPan: true });
+
+                    // Add a property to the obj.spots object that holds the marker info
+                    obj.spots[i].marker = marker;
 
                     // Add a property to the obj.spots object that holds this new infoWindow
                     obj.spots[i].priceInfoWindow = priceInfo;

@@ -19,6 +19,11 @@
                 <div class="item item-text-wrap" ng-cloak>
                     Description: {{spot.description}}
                 </div>
+                <div class="item item-text-wrap" style="text-align:center">
+                    <button class="button button-positive" ng-click="viewMySpotOnMap($index)">
+                        View on Map
+                    </button>
+                </div>
             </div>
 
         </ion-list>
