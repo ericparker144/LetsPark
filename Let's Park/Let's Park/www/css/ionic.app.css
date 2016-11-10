@@ -12393,6 +12393,6 @@ a.button {
     margin-right: 5px;
     /* Assuming "Map" and "Satellite" buttons always take up 125 pixels of the screen,
        calculate the width of the search bar to be 100% - (125px + 15px) for padding off the right side */
-    width: calc(100% - 140px);
+    width: calc(100% - 150px);
 
 }

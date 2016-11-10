@@ -54,7 +54,7 @@ angular.module('starter.controllers', [])
 
 
     $scope.userInfo = {
-        email_address: (window.localStorage.getItem("user_name") == null ? '' : window.localStorage.getItem("user_name")),
+        user_name: (window.localStorage.getItem("user_name") == null ? '' : window.localStorage.getItem("user_name")),
         password: (window.localStorage.getItem("password") == null ? '' : window.localStorage.getItem("password"))
     };
 
@@ -64,20 +64,20 @@ angular.module('starter.controllers', [])
 
         $http.post(API + '/Login', info).then(
             function (response) {
-                if (response.data == 'Success') {
+                if (response.data.login == 'Success') {
                     if ($scope.remember.me) {
-                        window.localStorage.setItem("user_name", $scope.userInfo.email_address);
+                        window.localStorage.setItem("user_name", $scope.userInfo.user_name);
                         window.localStorage.setItem("password", $scope.userInfo.password);
                     }
                     else {
                         window.localStorage.removeItem("user_name");
                         window.localStorage.removeItem("user_name");
                     }
-                    UserInfo.updateUserInfo(info.email_address);
+                    UserInfo.updateUserInfo(response.data.user_ID, $scope.userInfo.user_name, response.data.first_name, response.data.last_name);
                     $window.location.href = "#/tab/map";
                 }
                 else {
-                    if (response.data == 'Not a Let\'s Park user') {
+                    if (response.data.login == 'Not a Let\'s Park user') {
                         var title = 'Create an Account';
                         var content = 'You have not yet signed up for Let\'s Park. Please sign up and try logging in after that.';
                         Utility.showAlert(title, content);
@@ -103,7 +103,6 @@ angular.module('starter.controllers', [])
 })
 
 
-
     .controller('profileController', function ($scope, $http, API, UserInfo) {
 
         angular.element(document).ready(function () {
@@ -113,9 +112,8 @@ angular.module('starter.controllers', [])
                 noSpots: true,
                 caption: ''
             };
-
-
-            $http.get(API + '/GetMySpots?email_address=' + UserInfo.getUserInfo()).then(
+            
+            $http.get(API + '/GetMySpots/' + UserInfo.getUserInfo().user_ID).then(
                 function (response) {
                     $scope.mySpots = response.data;
                     if (response.data.length < 1) {
@@ -129,7 +127,6 @@ angular.module('starter.controllers', [])
         });
 
     })
-
 
 
     .controller('spotsController', function ($scope, $http, API, UserInfo, GEO) {

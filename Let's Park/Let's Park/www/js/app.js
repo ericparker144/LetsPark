@@ -10,10 +10,11 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
 .run(function ($ionicPlatform) {
     $ionicPlatform.ready(function () {
         // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
-        // for form inputs)
+        // for form inputs)        
+
         if (cordova.platformId === 'ios' && window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
             // By changing .hideKeyboardAccessoryBar() method to false, it adds the 'done' button to the keyboard for iOS
-            cordova.plugins.Keyboard.hideKeyboardAccessoryBar(false);
+            //cordova.plugins.Keyboard.hideKeyboardAccessoryBar(false);
             cordova.plugins.Keyboard.disableScroll(true);
         }
         if (window.StatusBar) {
@@ -307,7 +308,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
 
                     google.maps.event.addListener(marker, 'click', (function (marker, i) {
                         return function (evt) {
-                            infowindow.setContent(contentString.concat('<b>Price: </b>$', obj.spots[i].price, '<br><b>Spotter: </b>', obj.spots[i].email_address,
+                            infowindow.setContent(contentString.concat('<b>Price: </b>$', obj.spots[i].price,
                                 '<br><b>Availability: </b>', Utility.convertDBTimeTo12HourTime(obj.spots[i].start_time), ', ', obj.spots[i].start_time.substring(0, 10),
                                 ' to ', Utility.convertDBTimeTo12HourTime(obj.spots[i].end_time), ', ', obj.spots[i].end_time.substring(0, 10), '<br><b>Description: </b>', obj.spots[i].description, '</p>' + '</div>' + '</div>'));
 
@@ -376,20 +377,28 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     }
 })
 
-
-
+    
 
 .factory('UserInfo', function () {
 
     var userInfo = {};
-    var email_address = '';
 
-    userInfo.updateUserInfo = function (emailAddress) {
-        email_address = emailAddress;
+    var user = {};
+    user.user_name = '';
+    user.user_ID = '';
+    user.first_name = '';
+    user.last_name = '';
+
+    userInfo.updateUserInfo = function (userID, userName, firstName, lastName) {
+        user.user_ID = userID;
+        user.user_name = userName;
+        user.first_name = firstName;
+        user.last_name = lastName;
+
     }
 
     userInfo.getUserInfo = function () {
-        return email_address;
+        return user;
     }
 
     return userInfo;
