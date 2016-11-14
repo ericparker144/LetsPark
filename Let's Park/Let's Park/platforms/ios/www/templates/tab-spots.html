@@ -1,0 +1,31 @@
+﻿<ion-view view-title="Spots">
+    <ion-content>
+        <ion-list>
+            <ul>
+                <li class="item item-divider">
+                    Available Parking Spots:
+                </li>
+            </ul>
+
+            <div class="item item-borderless" ng-bind="spotsInfo.caption" ng-hide="spotsInfo.noSpots"></div>
+
+            <div class="card" ng-repeat="spot in allSpots">
+                <div class="item item-divider" ng-cloak>
+                    Spot {{$index + 1}}:
+                </div>
+                <div class="item item-text-wrap" ng-cloak>
+                    Price: {{spot.price | currency}}
+                </div>
+                <div class="item item-text-wrap" ng-cloak>
+                    Description: {{spot.description}}
+                </div>
+                <div class="item item-text-wrap" style="text-align:center">
+                    <button class="button button-positive" ng-click="viewSpotOnMap($index)">
+                        View on Map
+                    </button>
+                </div>
+            </div>
+
+        </ion-list>
+    </ion-content>
+</ion-view>

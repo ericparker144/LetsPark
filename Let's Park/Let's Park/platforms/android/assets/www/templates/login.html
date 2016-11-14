@@ -1,0 +1,20 @@
+﻿<ion-view view-title="Login">
+    <ion-content>
+        <ion-list>
+            <label class="item item-input">
+                <input type="text" autocorrect="off" autocapitalize="none" placeholder="User Name" ng-model="userInfo.user_name">
+            </label>
+            <label class="item item-input">
+                <input type="password" placeholder="Password" ng-model="userInfo.password">
+            </label>
+        </ion-list>
+        <div style="padding:10px">
+            <button class="button button-block button-positive" ng-click="loginUser()">
+                Login
+            </button>
+        </div>
+        <div style="text-align:center">
+            <ion-checkbox class="item-borderless" style="display:inline-block;text-align:center" ng-model="remember.me">Remember me</ion-checkbox>
+        </div>
+    </ion-content>
+</ion-view>

@@ -9,7 +9,7 @@
             </label>
         </ion-list>
         <div style="padding:10px">
-            <button class="button button-block button-positive" ng-click="loginUser()">
+            <button class="button button-block button-positive" ng-click="loginUser()" ng-disabled="!userInfo.user_name">
                 Login
             </button>
         </div>

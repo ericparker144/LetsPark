@@ -51,7 +51,6 @@ angular.module('starter.controllers', [])
 
     $scope.remember.me = (window.localStorage.getItem("user_name") == null ? false : true);
 
-
     $scope.userInfo = {
         user_name: (window.localStorage.getItem("user_name") == null ? '' : window.localStorage.getItem("user_name")),
         password: (window.localStorage.getItem("password") == null ? '' : window.localStorage.getItem("password"))
@@ -63,28 +62,38 @@ angular.module('starter.controllers', [])
 
         $http.post(API + '/Login', info).then(
             function (response) {
-                if (response.data.login == 'Success') {
-                    if ($scope.remember.me) {
-                        window.localStorage.setItem("user_name", $scope.userInfo.user_name);
-                        window.localStorage.setItem("password", $scope.userInfo.password);
-                    }
-                    else {
-                        window.localStorage.removeItem("user_name");
-                        window.localStorage.removeItem("user_name");
-                    }
-                    UserInfo.updateUserInfo(response.data.user_ID, $scope.userInfo.user_name, response.data.first_name, response.data.last_name);
-                    $window.location.href = "#/tab/map";
+
+                if (response.status == 404) {
+                    var title = '404 Error';
+                    var content = 'Server Error. Please try again later.';
+                    Utility.showAlert(title, content);
                 }
+
                 else {
-                    if (response.data.login == 'Not a Let\'s Park user') {
-                        var title = 'Create an Account';
-                        var content = 'You have not yet signed up for Let\'s Park. Please sign up and try logging in after that.';
-                        Utility.showAlert(title, content);
+
+                    if (response.data.login == 'Success') {
+                        if ($scope.remember.me) {
+                            window.localStorage.setItem("user_name", $scope.userInfo.user_name);
+                            window.localStorage.setItem("password", $scope.userInfo.password);
+                        }
+                        else {
+                            window.localStorage.removeItem("user_name");
+                            window.localStorage.removeItem("user_name");
+                        }
+                        UserInfo.updateUserInfo(response.data.user_ID, $scope.userInfo.user_name, response.data.first_name, response.data.last_name);
+                        $window.location.href = "#/tab/map";
                     }
                     else {
-                        var title = 'Error';
-                        var content = 'Incorrect Password or Username.';
-                        Utility.showAlert(title, content);
+                        if (response.data.login == 'Not a Let\'s Park user') {
+                            var title = 'Create an Account';
+                            var content = 'You have not yet signed up for Let\'s Park. Please sign up and try logging in after that.';
+                            Utility.showAlert(title, content);
+                        }
+                        else {
+                            var title = 'Error';
+                            var content = 'Incorrect Password or Username.';
+                            Utility.showAlert(title, content);
+                        }
                     }
                 }
             },
