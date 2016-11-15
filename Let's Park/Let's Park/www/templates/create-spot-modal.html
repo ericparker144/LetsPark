@@ -1,0 +1,35 @@
+﻿<ion-modal-view>
+    <ion-header-bar>
+        <h1 class="title">New Spot</h1>
+        <div class="buttons">
+            <button class="button button-clear" ng-click="closeModal()"> Cancel</button>
+        </div>
+    </ion-header-bar>
+    <ion-content>
+        <form name="addSpotForm" ng-submit="submitSpot()" novalidate>
+            <label class="item item-input item-stacked-label">
+                <span class="input-label">Address</span>
+                <input type="text" ng-model="newSpotInfo.address">
+            </label>
+            <label class="item item-input item-stacked-label">
+                <span class="input-label">Start Date/Time</span>
+                <input type="datetime-local" ng-model="newSpotInfo.start_time">
+            </label>
+            <label class="item item-input item-stacked-label">
+                <span class="input-label">End Date/Time</span>
+                <input type="datetime-local" ng-model="newSpotInfo.end_time">
+            </label>
+            <label class="item item-input item-stacked-label">
+                <span class="input-label">Price</span>
+                <input type="number" ng-model="newSpotInfo.price" min="0.5" max="50000" required>
+            </label>
+            <label class="item item-input item-stacked-label">
+                <span class="input-label">Description</span>
+                <textarea style="min-height:100px" ng-model="newSpotInfo.description" maxlength="1023" required></textarea>
+            </label>
+            <div style="padding:10px">
+                <button type="submit" class="button button-block button-positive" ng-disabled="addSpotForm.$invalid">Submit</button>
+            </div>
+        </form>
+    </ion-content>
+</ion-modal-view>

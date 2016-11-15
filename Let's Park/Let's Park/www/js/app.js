@@ -120,6 +120,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
 
     var obj = {};
 
+    obj.myLocation = {};
     obj.map = {};
     obj.spots = [];
 
@@ -200,13 +201,13 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
                   obj.map.fitBounds(bounds);
               });
 
-              var contentString = '<div id="content">' +
-         '<b><h5 id="firstHeading" class="firstHeading">Initial Location</h5></b>' + '<div id="bodyContent">' + '<p>This is the initial location found using your phone\'s GPS.</p>'
-       + '</div>' + '</div>';
+       //       var contentString = '<div id="content">' +
+       //  '<b><h5 id="firstHeading" class="firstHeading">Initial Location</h5></b>' + '<div id="bodyContent">' + '<p>This is the initial location found using your phone\'s GPS.</p>'
+       //+ '</div>' + '</div>';
 
-              var infowindow = new google.maps.InfoWindow({
-                  content: contentString
-              });
+       //       var infowindow = new google.maps.InfoWindow({
+       //           content: contentString
+       //       });
 
               var pinColor = "387EF5";
               var pinImage = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + pinColor,
@@ -214,16 +215,16 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
                 new google.maps.Point(0, 0),
                 new google.maps.Point(10, 34));
 
-              var marker = new google.maps.Marker({
+              obj.myLocation = new google.maps.Marker({
                   map: obj.map,
                   position: initialLatLng,
                   title: 'Initial Location',
                   icon: pinImage
               });
 
-              marker.addListener('click', function () {
-                  infowindow.open(obj.map, marker);
-              });
+              //marker.addListener('click', function () {
+              //    infowindow.open(obj.map, marker);
+              //});
 
               google.maps.event.addListenerOnce(obj.map, 'idle', function () {
                   callback();
@@ -339,6 +340,14 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
 
     };
 
+    obj.refreshSpots = function () {
+        for (var i = 0; i < obj.spots.length; i++) {
+            obj.spots[i].marker.setMap(null);
+        }
+        obj.spots = [];
+        obj.addSpotsToMap();
+    };
+
     return obj;
 })
 
@@ -351,10 +360,18 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
                 title: title,
                 template: content
             });
+        },
+        showAlertWithCallback: function (title, content, callback) {
+        
+            var alertPopup = $ionicPopup.alert({
+                title: title,
+                template: content
+            });
 
-            //alertPopup.then(function (res) {
-            //    console.log('Pop up closed.');
-            //});
+            alertPopup.then(function (res) {
+                callback();
+            });
+
         },
         convertDBTimeTo12HourTime: function (str) {
             var tod = '';
@@ -375,6 +392,10 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
                 return hours.substring(1).concat(str.substring(13, 16), tod);
 
             return hours.toString().concat(str.substring(13, 16), tod);
+        },
+        formatHTMLdatetimeForDB: function (time) {
+            return time.getFullYear() + '-' + (time.getMonth() < 10 ? '0' : '') + (time.getMonth() + 1) + '-' + (time.getDate() < 10 ? '0' : '') + time.getDate() + ' '
+            + (time.getHours() < 10 ? '0' : '') + time.getHours() + ':' + (time.getMinutes() < 10 ? '0' : '') + time.getMinutes() + ':' + (time.getSeconds() < 10 ? '0' : '') + time.getSeconds();
         }
     }
 })
