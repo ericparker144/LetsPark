@@ -6,7 +6,8 @@ angular.module('starter.controllers', [])
 
         GEO.getMap(GEO.addSpotsToMap);
 
-        $ionicModal.fromTemplateUrl('../templates/create-spot-modal.html', {
+        // The url given to the .fromTemplateUrl() method is VERY important. If it is not this URL, the modal will not be created and therefore won't work
+        $ionicModal.fromTemplateUrl('templates/create-spot-modal.html', {
             scope: $scope,
             animation: 'slide-in-up'
         }).then(function (modal) {
@@ -65,6 +66,14 @@ angular.module('starter.controllers', [])
     };
 
     $scope.createSpot = function () {
+
+        $scope.newSpotInfo = {
+            address: '',
+            price: '',
+            start_time: new Date(),
+            end_time: new Date(),
+            description: ''
+        };
 
         $http.get("http://maps.googleapis.com/maps/api/geocode/json?latlng=" + newSpotMarker.getPosition().lat() + ',' + newSpotMarker.getPosition().lng()).then(
         function (response) {
