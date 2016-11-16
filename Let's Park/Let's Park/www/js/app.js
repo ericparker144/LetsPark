@@ -222,6 +222,9 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
                   icon: pinImage
               });
 
+              // Show the 'getCurrentLoc' function button only if the user's phone has location enabled
+              obj.myLocation.LocationEnabled = true;
+
               //marker.addListener('click', function () {
               //    infowindow.open(obj.map, marker);
               //});
@@ -256,15 +259,18 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
                   content: contentString
               });
 
-              var marker = new google.maps.Marker({
+              obj.myLocation = new google.maps.Marker({
                   map: obj.map,
-                  position: initialLatLng,
+                  position: defaultLatLng,
                   title: 'Initial Location'
               });
 
-              marker.addListener('click', function () {
-                  infowindow.open(obj.map, marker);
-              });
+              // Show the 'getCurrentLoc' function button only if the user's phone has location enabled
+              obj.myLocation.LocationEnabled = false;
+
+              //marker.addListener('click', function () {
+              //    infowindow.open(obj.map, marker);
+              //});
 
               google.maps.event.addListenerOnce(obj.map, 'idle', function () {
                   callback();

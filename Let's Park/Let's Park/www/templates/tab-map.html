@@ -1,7 +1,7 @@
 <ion-view view-title="Map">
     <ion-nav-buttons side="right" ng-show="false">
         <button class="button button-icon button-clear ion-location" ng-click="newSpot()"></button>
-        <button class="button button-icon button-clear ion-navigate" style="margin-left:20px" ng-click="getCurrentLoc()"></button>
+        <button class="button button-icon button-clear ion-navigate" style="margin-left:20px" ng-show="phoneProperties.LocationEnabled" ng-click="getCurrentLoc()"></button>
     </ion-nav-buttons>
   <ion-content>
       <input id="pac-input" class="controls" type="text" placeholder="Search">

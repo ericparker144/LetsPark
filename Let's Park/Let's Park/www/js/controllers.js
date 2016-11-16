@@ -17,6 +17,10 @@ angular.module('starter.controllers', [])
 
     });
 
+    $scope.phoneProperties = {
+        LocationEnabled: GEO.myLocation.LocationEnabled
+    };
+
     $scope.newSpotInfo = {
         address: '',
         price: '',

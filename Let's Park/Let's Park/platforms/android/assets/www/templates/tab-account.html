@@ -1,9 +1,22 @@
 <ion-view view-title="Account">
-  <ion-content>
-    <ion-list>
-    <ion-toggle  ng-model="settings.enableFriends">
-        Enable Friends
-    </ion-toggle>
-    </ion-list>
-  </ion-content>
+    <ion-content>
+        <ion-list>
+            <ion-toggle ng-model="settings.enableFriends">
+                Enable Friends
+            </ion-toggle>
+            <div ng-show="settings.enableFriends">
+                <ul>
+                    <li class="item item-divider">
+                        Spotter Users:
+                    </li>
+                </ul>
+                <div class="card" ng-repeat="user in users">
+                    <div class="item item-divider" ng-bind="user.first_name + ' ' + user.last_name">
+                    </div>
+                    <div class="item item-text-wrap" ng-bind="user.user_name">
+                    </div>
+                </div>
+            </div>
+        </ion-list>
+    </ion-content>
 </ion-view>
