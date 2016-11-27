@@ -24,7 +24,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     });
 })
 
-.constant('API', 'http://lpserver-letsparkserver.44fs.preview.openshiftapps.com/api')
+.constant('API', 'http://nodecode-letsparkserver.44fs.preview.openshiftapps.com/api')
 
 .config(function ($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
 
