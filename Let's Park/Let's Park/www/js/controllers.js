@@ -130,24 +130,24 @@ angular.module('starter.controllers', [])
 
             console.log(post);
 
-            //$http.post(API + '/CreateParkingSpot', post).then(function (response) {
-            //    if (response.data == "Success") {
-            //        GEO.refreshSpots();
-            //        var title = "Success";
-            //        var content = "Your parking spot is now available for purchase."
-            //        Utility.showAlertWithCallback(title, content, $scope.closeModal);
-            //    }
-            //    else {
-            //        var title = "Error";
-            //        var content = "Your parking spot was not added to the map."
-            //        Utility.showAlertWithCallback(title, content, $scope.closeModal);
-            //    }
-            //},
-            //function (response) {
-            //    var title = "Server Error";
-            //    var content = "There was a problem with the server. Please try again later."
-            //    Utility.showAlertWithCallback(title, content, $scope.closeModal);
-            //});
+            $http.post(API + '/CreateParkingSpot', post).then(function (response) {
+                if (response.data == "Success") {
+                    GEO.refreshSpots();
+                    var title = "Success";
+                    var content = "Your parking spot is now available for purchase."
+                    Utility.showAlertWithCallback(title, content, $scope.closeModal);
+                }
+                else {
+                    var title = "Error";
+                    var content = "Your parking spot was not added to the map."
+                    Utility.showAlertWithCallback(title, content, $scope.closeModal);
+                }
+            },
+            function (response) {
+                var title = "Server Error";
+                var content = "There was a problem with the server. Please try again later."
+                Utility.showAlertWithCallback(title, content, $scope.closeModal);
+            });
 
         }
 
