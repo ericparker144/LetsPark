@@ -115,8 +115,7 @@ angular.module('starter.controllers', [])
             var formattedStartTime = Utility.formatHTMLdatetimeForDB($scope.newSpotInfo.start_time);
             var formattedEndTime = Utility.formatHTMLdatetimeForDB($scope.newSpotInfo.end_time);
 
-            console.log(formattedStartTime);
-
+            // console.log(formattedStartTime);
 
             var post = {
                 user_ID: UserInfo.getUserInfo().user_ID,
@@ -126,9 +125,16 @@ angular.module('starter.controllers', [])
                 start_time: formattedStartTime,
                 end_time: formattedEndTime,
                 description: $scope.newSpotInfo.description
-            };
-
-            console.log(post);
+            };            
+                        
+            // This is a test modal for confirming DateTime on device
+            //post.toString = function () {
+            //    return 'user_ID: '.concat(this.user_ID, ' start_time: ', this.start_time, ' end_time: ', this.end_time);
+            //}
+            //console.log(post.toString());
+            //var title = "Test";
+            //var content = post.toString();
+            //Utility.showAlertWithCallback(title, content, $scope.closeModal);
 
             $http.post(API + '/CreateParkingSpot', post).then(function (response) {
                 if (response.data == "Success") {
@@ -224,7 +230,7 @@ angular.module('starter.controllers', [])
                         }
                         else {
                             window.localStorage.removeItem("user_name");
-                            window.localStorage.removeItem("user_name");
+                            window.localStorage.removeItem("password");
                         }
                         UserInfo.updateUserInfo(response.data.user_ID, $scope.userInfo.user_name, response.data.first_name, response.data.last_name);
                         $window.location.href = "#/tab/map";

@@ -24,7 +24,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     });
 })
 
-.constant('API', 'http://nodecode-letsparkserver.44fs.preview.openshiftapps.com/api')
+.constant('API', 'http://lpserver-letsparkserver.44fs.preview.openshiftapps.com/api')
 
 .config(function ($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
 
@@ -400,8 +400,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
             return hours.toString().concat(str.substring(13, 16), tod);
         },
         formatHTMLdatetimeForDB: function (time) {
-            return time.getFullYear() + '-' + (time.getMonth() < 10 ? '0' : '') + (time.getMonth() + 1) + '-' + (time.getDate() < 10 ? '0' : '') + time.getDate() + ' '
-            + (time.getHours() < 10 ? '0' : '') + time.getHours() + ':' + (time.getMinutes() < 10 ? '0' : '') + time.getMinutes() + ':' + (time.getSeconds() < 10 ? '0' : '') + time.getSeconds();
+            return time.getFullYear().toString().concat('-', (time.getMonth() < 10 ? '0' : ''), (time.getMonth() + 1), '-', (time.getDate() < 10 ? '0' : ''), time.getDate(), ' ',
+            (time.getHours() < 10 ? '0' : ''), time.getHours(), ':', (time.getMinutes() < 10 ? '0' : ''), time.getMinutes(), ':', (time.getSeconds() < 10 ? '0' : ''), time.getSeconds());
         }
     }
 })
